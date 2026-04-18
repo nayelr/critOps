@@ -1,0 +1,292 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base Reset ─────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body, #root {
+  height: 100%;
+  background: #04091a;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ─────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: #04091a; }
+::-webkit-scrollbar-thumb { background: #1a3354; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+
+/* ── Tactical Card Base ─────────────────────── */
+.tac-card {
+  background: #0d1e35;
+  border: 1px solid #1a3354;
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+
+.tac-card-elevated {
+  background: #102240;
+  border: 1px solid #1e4070;
+  border-radius: 6px;
+}
+
+/* ── Section Headers ─────────────────────────── */
+.section-header {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #00f5ff;
+  border-bottom: 1px solid #1a3354;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #00f5ff;
+  box-shadow: 0 0 8px rgba(0, 245, 255, 0.6);
+  flex-shrink: 0;
+}
+
+/* ── Status Pills ────────────────────────────── */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.pill-online  { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+.pill-warning { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid rgba(245,158,11,0.3); }
+.pill-alert   { background: rgba(239,68,68,0.15);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.pill-cyan    { background: rgba(0,245,255,0.1);   color: #00f5ff; border: 1px solid rgba(0,245,255,0.25); }
+.pill-dim     { background: rgba(71,85,105,0.2);   color: #64748b; border: 1px solid rgba(71,85,105,0.3); }
+
+/* ── Metric Value ────────────────────────────── */
+.metric-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1;
+}
+
+.metric-val-sm {
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1;
+}
+
+.metric-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #475569;
+}
+
+/* ── Sparkline SVG Container ───────────────── */
+.sparkline-wrap {
+  width: 100%;
+  height: 28px;
+  overflow: hidden;
+}
+
+/* ── Blinking Dot ─────────────────────────── */
+.blink-dot {
+  animation: blinkDot 1.2s step-end infinite;
+}
+@keyframes blinkDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Pulse Ring ──────────────────────────── */
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid #00f5ff;
+  animation: pulseRing 2s ease-out infinite;
+  opacity: 0;
+}
+@keyframes pulseRing {
+  0%   { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(2.0); opacity: 0; }
+}
+
+/* ── Threat Level Bar ─────────────────────── */
+.threat-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+  position: relative;
+  overflow: visible;
+}
+
+.threat-cursor {
+  position: absolute;
+  top: -4px;
+  width: 3px;
+  height: 12px;
+  background: white;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 6px rgba(255,255,255,0.8);
+  transition: left 0.5s ease;
+}
+
+/* ── Gauge Arc ──────────────────────────── */
+.gauge-svg { overflow: visible; }
+
+/* ── Progress Bar Animated ─────────────── */
+.bar-fill {
+  transition: width 0.8s ease;
+}
+
+/* ── Waterfall Canvas ──────────────────── */
+#spectrogram-canvas {
+  image-rendering: pixelated;
+  display: block;
+  width: 100%;
+}
+
+/* ── Alert Row Colors ──────────────────── */
+.alert-critical { border-left: 3px solid #ff3b3b; }
+.alert-high     { border-left: 3px solid #ff6b35; }
+.alert-medium   { border-left: 3px solid #f59e0b; }
+.alert-low      { border-left: 3px solid #10b981; }
+.alert-info     { border-left: 3px solid #22d3ee; }
+
+/* ── Grid layout helpers ──────────────── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr 280px;
+  gap: 8px;
+}
+
+.bottom-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+/* ── Leaflet dark overrides ──────────── */
+.leaflet-container {
+  background: #04091a !important;
+}
+.leaflet-control-zoom a {
+  background: #0d1e35 !important;
+  color: #22d3ee !important;
+  border-color: #1a3354 !important;
+}
+.leaflet-control-attribution {
+  background: rgba(4, 9, 26, 0.8) !important;
+  color: #475569 !important;
+  font-size: 9px !important;
+}
+
+/* ── Camera feed scanline effect ─────── */
+.scanline-overlay {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 245, 255, 0.02) 2px,
+    rgba(0, 245, 255, 0.02) 4px
+  );
+  pointer-events: none;
+}
+
+/* ── Neon glow text ──────────────────── */
+.glow-text {
+  text-shadow: 0 0 12px rgba(0, 245, 255, 0.7);
+}
+
+.glow-red {
+  text-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+}
+
+.glow-green {
+  text-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+}
+
+/* ── Radar sweep animation ─────────────── */
+@keyframes radarSweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.radar-sweep {
+  animation: radarSweep 3s linear infinite;
+  transform-origin: center bottom;
+}
+
+/* ── Data tick animation ─────────────── */
+@keyframes dataTick {
+  0%, 90%  { opacity: 1; }
+  95%      { opacity: 0.3; }
+  100%     { opacity: 1; }
+}
+
+.data-tick {
+  animation: dataTick 2s ease-in-out infinite;
+}
+
+/* ── Cyber grid background ─────────── */
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(0, 245, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* ── Top bar ─────────────────────────── */
+.topbar {
+  background: linear-gradient(90deg, #04091a 0%, #070f1f 50%, #04091a 100%);
+  border-bottom: 1px solid #1a3354;
+  box-shadow: 0 2px 20px rgba(0, 245, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ── Contact badge flash ─────────────── */
+@keyframes contactFlash {
+  0%, 100% { background: rgba(239,68,68,0.15); }
+  50%      { background: rgba(239,68,68,0.35); }
+}
+
+.contact-flash {
+  animation: contactFlash 0.8s ease-in-out infinite;
+}
+
+/* ── Value update flash ──────────────── */
+@keyframes valueUpdate {
+  0%   { color: #00f5ff; }
+  100% { color: #e2e8f0; }
+}
+
+.value-update {
+  animation: valueUpdate 0.4s ease-out;
+}
