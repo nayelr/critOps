@@ -1,103 +1,68 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import { useSimulation } from './hooks/useSimulation'
-import TopBar from './components/TopBar'
-import SensorGrid from './components/SensorGrid'
-import MapPanel from './components/MapPanel'
+import TopBar        from './components/TopBar'
+import MapPanel      from './components/MapPanel'
 import HydrophonePanel from './components/HydrophonePanel'
-import AIPanel from './components/AIPanel'
-import CameraPanel from './components/CameraPanel'
-import CybersecPanel from './components/CybersecPanel'
-import CommsPanel from './components/CommsPanel'
-import DigitalTwinPanel from './components/DigitalTwinPanel'
-import AlertsPanel from './components/AlertsPanel'
-import { BUOY_CONFIG } from './data/mockData'
-
-// Classification banner at very top
-function ClassificationBanner() {
-  return (
-    <div className="bg-[#0a1628] border-b border-[#1a3354] text-center py-0.5">
-      <span className="font-mono text-[8px] font-bold tracking-[0.3em] text-[#475569]">
-        {BUOY_CONFIG.classification}
-      </span>
-    </div>
-  )
-}
+import AIPanel       from './components/AIPanel'
+import SensorStrip   from './components/SensorStrip'
+import EventLog      from './components/EventLog'
 
 export default function App() {
   const sim = useSimulation()
 
   return (
-    <div className="flex flex-col h-screen bg-[#04091a] cyber-grid overflow-hidden">
-      <ClassificationBanner />
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#040912', overflow: 'hidden' }}>
+
+      {/* ── Top Bar ─────────────────────────────────────── */}
       <TopBar
         utcTime={sim.utcTime}
         sensors={sim.sensors}
-        threatLevel={sim.threatLevel}
-        lastSync={sim.lastSync}
-        autonomyMode={sim.autonomyMode}
-        connectionQuality={sim.connectionQuality}
+        confidence={sim.confidence}
       />
 
-      {/* Main scrollable area */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="p-2 space-y-2 min-w-[1200px]">
+      {/* ── Main body ───────────────────────────────────── */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, padding: 8, minHeight: 0 }}>
 
-          {/* ── Row 1: Sensors | Map | Alerts ──────────────────── */}
-          <div className="grid gap-2" style={{ gridTemplateColumns: '300px 1fr 280px', height: '520px' }}>
-            <SensorGrid
-              sensors={sim.sensors}
-              history={sim.history}
-            />
+        {/* Row 1: Map (left, 57%) | Hydrophone (right, 43%) */}
+        <div style={{ display: 'flex', gap: 8, flex: '0 0 auto', height: 420 }}>
+          <div style={{ flex: '0 0 57%' }}>
             <MapPanel
               sensors={sim.sensors}
               vessels={sim.vessels}
-              contacts={sim.contacts}
+              threatLat={sim.threatLat}
+              threatLon={sim.threatLon}
+              confidence={sim.confidence}
             />
-            <AlertsPanel alertLog={sim.alertLog} />
           </div>
-
-          {/* ── Row 2: Hydrophone (full width, prominent) ───────── */}
-          <div style={{ height: '480px' }}>
+          <div style={{ flex: 1 }}>
             <HydrophonePanel
-              acousticLog={sim.acousticLog}
-              activeContact={sim.activeContact}
+              confidence={sim.confidence}
+              threatRange={sim.threatRange}
             />
           </div>
+        </div>
 
-          {/* ── Row 3: AI | Camera | Cybersec | Comms ──────────── */}
-          <div className="grid grid-cols-4 gap-2" style={{ height: '620px' }}>
+        {/* Row 2: AI Panel (left, 38%) | Sensor strip + Event log (right, 62%) */}
+        <div style={{ display: 'flex', gap: 8, flex: 1, minHeight: 0 }}>
+          <div style={{ flex: '0 0 38%' }}>
             <AIPanel
-              aiScenario={sim.aiScenario}
-              threatLevel={sim.threatLevel}
-              inferenceLatency={sim.inferenceLatency}
-              inferenceConfidence={sim.inferenceConfidence}
-              history={sim.history}
-              sensors={sim.sensors}
-            />
-            <CameraPanel />
-            <CybersecPanel />
-            <CommsPanel
-              sensors={sim.sensors}
-              connectionQuality={sim.connectionQuality}
-              history={sim.history}
+              aiAssessment={sim.aiAssessment}
+              recommendedAction={sim.recommendedAction}
+              confidence={sim.confidence}
             />
           </div>
-
-          {/* ── Row 4: Digital Twin ─────────────────────────────── */}
-          <div style={{ height: '420px' }}>
-            <DigitalTwinPanel
-              sensors={sim.sensors}
-              threatLevel={sim.threatLevel}
-            />
-          </div>
-
-          {/* Footer */}
-          <div className="text-center py-3">
-            <div className="font-mono text-[8px] text-[#1a3354] tracking-[0.4em]">
-              TRITON WATCH COMMAND INTERFACE · {BUOY_CONFIG.missionId} · {BUOY_CONFIG.firmwareVersion}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {/* Sensor cards */}
+            <div style={{ flex: '0 0 auto', height: 104 }}>
+              <SensorStrip sensors={sim.sensors} />
+            </div>
+            {/* Event log */}
+            <div style={{ flex: 1, minHeight: 0 }}>
+              <EventLog events={sim.events} />
             </div>
           </div>
         </div>
+
       </div>
     </div>
   )
