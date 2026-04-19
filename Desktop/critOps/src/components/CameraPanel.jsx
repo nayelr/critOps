@@ -4,153 +4,23 @@ import { mapBoxToOverlay, labelColor } from '../utils/yoloOverlay'
 
 const FEED_HEIGHT = 380
 
-// Fake "object detection" boxes drawn on canvas (fallback when no stream URL)
-function CameraCanvas() {
-  const canvasRef = useRef(null)
-  const animRef = useRef(null)
-  const frameRef = useRef(0)
-  const detectionsRef = useRef([
-    { x: 0.12, y: 0.35, w: 0.76, h: 0.38, label: 'SURFACE', conf: 0.42, color: '#64748b' },
-    { x: 0.38, y: 0.48, w: 0.22, h: 0.12, label: 'RIPPLE', conf: 0.31, color: '#22d3ee' },
-  ])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const W = canvas.width
-    const H = canvas.height
-
-    const draw = () => {
-      frameRef.current++
-      const f = frameRef.current
-
-      ctx.fillStyle = '#0a1a20'
-      ctx.fillRect(0, 0, W, H)
-
-      const horizonY = H * 0.42 + 8 * Math.sin(f * 0.02)
-      ctx.strokeStyle = 'rgba(34, 211, 238, 0.15)'
-      ctx.lineWidth = 1
-      ctx.beginPath()
-      ctx.moveTo(0, horizonY)
-      ctx.lineTo(W, horizonY)
-      ctx.stroke()
-
-      const skyGrad = ctx.createLinearGradient(0, 0, 0, horizonY)
-      skyGrad.addColorStop(0, 'rgba(4, 9, 26, 0.9)')
-      skyGrad.addColorStop(1, 'rgba(10, 30, 50, 0.6)')
-      ctx.fillStyle = skyGrad
-      ctx.fillRect(0, 0, W, horizonY)
-
-      const seaGrad = ctx.createLinearGradient(0, horizonY, 0, H)
-      seaGrad.addColorStop(0, 'rgba(2, 20, 40, 0.95)')
-      seaGrad.addColorStop(1, 'rgba(1, 10, 25, 0.98)')
-      ctx.fillStyle = seaGrad
-      ctx.fillRect(0, horizonY, W, H - horizonY)
-
-      for (let i = 0; i < 8; i++) {
-        const wy = horizonY + (i + 1) * (H - horizonY) / 9
-        const amp = 2 + i * 0.5
-        ctx.strokeStyle = `rgba(34, 211, 238, ${0.04 + i * 0.01})`
-        ctx.lineWidth = 0.5
-        ctx.beginPath()
-        for (let x = 0; x < W; x += 3) {
-          const y = wy + amp * Math.sin(x * 0.04 + f * 0.05 + i)
-          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
-        }
-        ctx.stroke()
-      }
-
-      const vx = (0.55 + 0.04 * Math.sin(f * 0.005)) * W
-      const vy = horizonY - 12
-      ctx.fillStyle = 'rgba(20, 40, 60, 0.95)'
-      ctx.fillRect(vx - 18, vy - 4, 36, 8)
-      ctx.fillRect(vx - 4, vy - 14, 8, 10)
-      ctx.fillRect(vx + 8, vy - 9, 4, 5)
-
-      for (let y = 0; y < H; y += 4) {
-        ctx.fillStyle = `rgba(0, 0, 0, ${0.06 + 0.04 * Math.sin(f * 0.1 + y * 0.01)})`
-        ctx.fillRect(0, y, W, 2)
-      }
-
-      detectionsRef.current.forEach(d => {
-        const alpha = 0.6 + 0.4 * Math.sin(f * 0.08)
-        ctx.strokeStyle = d.color
-        ctx.lineWidth = 1.5
-        ctx.globalAlpha = alpha
-        ctx.strokeRect(d.x * W, d.y * H, d.w * W, d.h * H)
-
-        const cLen = 6
-        ctx.lineWidth = 2
-        ;[
-          [d.x * W, d.y * H],
-          [(d.x + d.w) * W, d.y * H],
-          [d.x * W, (d.y + d.h) * H],
-          [(d.x + d.w) * W, (d.y + d.h) * H],
-        ].forEach(([cx, cy], qi) => {
-          ctx.beginPath()
-          if (qi === 0 || qi === 2) { ctx.moveTo(cx, cy); ctx.lineTo(cx + cLen, cy); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy + cLen) }
-          else if (qi === 1 || qi === 3) { ctx.moveTo(cx, cy); ctx.lineTo(cx - cLen, cy); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy + cLen) }
-          ctx.stroke()
-        })
-
-        ctx.globalAlpha = 0.9
-        ctx.fillStyle = d.color
-        ctx.font = 'bold 9px "Space Mono", monospace'
-        ctx.fillText(`${d.label} ${Math.round(d.conf * 100)}%`, d.x * W, d.y * H - 4)
-      })
-
-      ctx.globalAlpha = 1
-
-      ctx.strokeStyle = 'rgba(0, 245, 255, 0.15)'
-      ctx.lineWidth = 0.5
-      ctx.setLineDash([4, 4])
-      ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke()
-      ctx.beginPath(); ctx.moveTo(0, H / 2); ctx.lineTo(W, H / 2); ctx.stroke()
-      ctx.setLineDash([])
-
-      ctx.fillStyle = 'rgba(0, 245, 255, 0.6)'
-      ctx.font = 'bold 8px "Space Mono", monospace'
-      ctx.fillText('ACORN-01 · SIMULATED', 6, 14)
-      ctx.fillText(`FRAME ${String(f).padStart(6, '0')}`, 6, H - 6)
-      ctx.fillText('demo feed · no threat', W - 118, H - 6)
-
-      if (f % 120 < 10) {
-        ctx.fillStyle = 'rgba(0,245,255,0.1)'
-        ctx.fillRect(W - 80, 6, 74, 16)
-        ctx.fillStyle = 'rgba(0,245,255,0.8)'
-        ctx.fillText('LOW-LIGHT', W - 76, 18)
-      }
-
-      animRef.current = requestAnimationFrame(draw)
-    }
-
-    animRef.current = requestAnimationFrame(draw)
-    return () => cancelAnimationFrame(animRef.current)
-  }, [])
-
-  return (
-    <canvas
-      ref={canvasRef}
-      width={640}
-      height={380}
-      className="w-full rounded"
-      style={{ height: `${FEED_HEIGHT}px`, display: 'block' }}
-    />
-  )
-}
-
 function LiveMjpegFeed({ streamUrl, boxes = [] }) {
+  const trimmed = typeof streamUrl === 'string' ? streamUrl.trim() : ''
+  const hasUrl = Boolean(trimmed)
   const [feedKey, setFeedKey] = useState(0)
-  const [status, setStatus] = useState('loading')
+  const [status, setStatus] = useState(() => (hasUrl ? 'loading' : 'error'))
   const [layoutTick, setLayoutTick] = useState(0)
   const containerRef = useRef(null)
   const imgRef = useRef(null)
 
   useEffect(() => {
+    if (!hasUrl) {
+      setStatus('error')
+      return
+    }
     setStatus('loading')
     setFeedKey(0)
-  }, [streamUrl])
+  }, [streamUrl, hasUrl])
 
   useLayoutEffect(() => {
     const el = containerRef.current
@@ -170,9 +40,13 @@ function LiveMjpegFeed({ streamUrl, boxes = [] }) {
   }, [])
 
   const retry = useCallback(() => {
+    if (!trimmed) {
+      window.location.reload()
+      return
+    }
     setStatus('loading')
     setFeedKey(k => k + 1)
-  }, [])
+  }, [trimmed])
 
   void layoutTick
   void boxes
@@ -195,17 +69,21 @@ function LiveMjpegFeed({ streamUrl, boxes = [] }) {
       className="relative w-full rounded overflow-hidden bg-[#040912]"
       style={{ minHeight: FEED_HEIGHT }}
     >
-      <img
-        ref={imgRef}
-        key={feedKey}
-        src={streamUrl}
-        alt="USB camera"
-        className="w-full object-contain block bg-black/40"
-        style={{ height: FEED_HEIGHT }}
-        draggable={false}
-        onLoad={onLoad}
-        onError={onError}
-      />
+      {hasUrl ? (
+        <img
+          ref={imgRef}
+          key={feedKey}
+          src={trimmed}
+          alt="USB camera"
+          className="w-full object-contain block bg-black/40"
+          style={{ height: FEED_HEIGHT }}
+          draggable={false}
+          onLoad={onLoad}
+          onError={onError}
+        />
+      ) : (
+        <div className="w-full block bg-black/40" style={{ height: FEED_HEIGHT }} aria-hidden />
+      )}
       {status === 'ok' && overlayRects.length > 0 && (
         <div className="absolute inset-0 pointer-events-none z-20" aria-hidden>
           {overlayRects.map((r) => (
@@ -254,7 +132,7 @@ function LiveMjpegFeed({ streamUrl, boxes = [] }) {
           </button>
         </div>
       )}
-      {status === 'loading' && (
+      {hasUrl && status === 'loading' && (
         <div
           className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
           style={{ background: 'rgba(4,9,18,0.5)' }}
@@ -288,7 +166,7 @@ export default function CameraPanel({ streamUrl = '', yoloWsUrl = '' }) {
     <div className="panel flex flex-col h-full min-h-0">
       <div className="panel-header justify-between flex-shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className={live ? 'dot-online' : 'dot-warning'} />
+          <div className={live ? 'dot-online' : 'dot-offline'} />
           <span className="panel-label">Camera</span>
         </div>
         <div className="flex items-center gap-2 flex-wrap justify-end">
@@ -321,27 +199,24 @@ export default function CameraPanel({ streamUrl = '', yoloWsUrl = '' }) {
                 : { color: '#94a3b8', borderColor: '#1a3050', background: '#0c1d30' }
             }
           >
-            {live ? 'ACORN LIVE' : 'SIMULATED'}
+            {live ? 'ACORN LIVE' : 'NO SIGNAL'}
           </div>
         </div>
       </div>
 
       <div className="flex-1 flex flex-col gap-2 px-3 py-2 overflow-y-auto min-h-0">
         <div className="relative flex-shrink-0">
-          {live ? (
-            <LiveMjpegFeed
-              streamUrl={streamUrl.trim()}
-              boxes={boxes}
-            />
-          ) : (
-            <CameraCanvas />
-          )}
+          <LiveMjpegFeed streamUrl={streamUrl.trim()} boxes={boxes} />
           <div className="absolute top-2 right-2 flex flex-col gap-1 z-10 pointer-events-none">
             <div
               className="px-2 py-0.5 rounded font-mono text-[7px] font-bold border"
-              style={{ color: '#22c55e', borderColor: '#22c55e44', background: 'rgba(4,9,18,0.85)' }}
+              style={
+                live
+                  ? { color: '#22c55e', borderColor: '#22c55e44', background: 'rgba(4,9,18,0.85)' }
+                  : { color: '#64748b', borderColor: '#1a3050', background: 'rgba(4,9,18,0.85)' }
+              }
             >
-              {live ? 'LIVE' : 'DEMO'}
+              {live ? 'LIVE' : 'NO SIGNAL'}
             </div>
             {live && (
               <div

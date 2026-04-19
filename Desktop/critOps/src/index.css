@@ -44,6 +44,7 @@ html, body, #root {
 
 /* ── Status dots ─────────────────── */
 .dot-online  { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.6); }
+.dot-offline { width: 8px; height: 8px; border-radius: 50%; background: #64748b; box-shadow: 0 0 6px rgba(100,116,139,0.45); }
 .dot-warning { width: 8px; height: 8px; border-radius: 50%; background: #eab308; box-shadow: 0 0 8px rgba(234,179,8,0.6); }
 .dot-threat  { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 10px rgba(239,68,68,0.8); }
 
