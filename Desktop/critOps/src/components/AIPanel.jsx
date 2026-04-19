@@ -30,7 +30,7 @@ export default function AIPanel({ aiAssessment, recommendedAction, confidence })
         <span className="panel-label">AI Assessment</span>
         <div className="ml-auto px-2 py-0.5 rounded font-mono text-[9px] font-bold text-[#a78bfa] border border-[#a78bfa33]"
           style={{ background: 'rgba(167,139,250,0.08)' }}>
-          AQUILA-EDGE v3.1
+          ACORN-EDGE v3.1
         </div>
       </div>
 

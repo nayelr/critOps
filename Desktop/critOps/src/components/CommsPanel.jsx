@@ -138,7 +138,7 @@ export default function CommsPanel({ sensors, connectionQuality, history }) {
             <div className="font-mono text-[10px] font-bold text-[#10b981]">SHORE-01 — CONNECTED</div>
           </div>
           <div className="font-mono text-[8px] text-[#475569]">
-            USCG Pacific Fleet Maritime Surveillance — Monterey Bay Station
+            Acorn Shore Operations — Arlington relay
           </div>
           <div className="font-mono text-[8px] text-[#475569] mt-0.5">
             IP: 10.88.42.1 · Port: 8443 · TLS 1.3 encrypted

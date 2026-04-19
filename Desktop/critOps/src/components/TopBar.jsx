@@ -1,9 +1,9 @@
 import React from 'react'
 import { BUOY } from '../data/mockData'
 
-export default function TopBar({ utcTime, sensors, confidence }) {
-  const threatActive = confidence > 0.5
-  const sysStatus = threatActive ? 'THREAT DETECTED' : 'ONLINE'
+export default function TopBar({ utcTime, sensors, confidence, submersibleDetected = true }) {
+  const threatActive = submersibleDetected && confidence > 0.5
+  const sysStatus = threatActive ? 'THREAT DETECTED' : submersibleDetected ? 'ONLINE' : 'ONLINE · CLEAR'
   const sysColor  = threatActive ? '#ef4444' : '#22c55e'
 
   return (
@@ -26,7 +26,7 @@ export default function TopBar({ utcTime, sensors, confidence }) {
           <div className="font-mono text-[15px] font-bold tracking-widest text-[#00d4ff]">
             {BUOY.name.toUpperCase()}
           </div>
-          <div className="text-[9px] text-[#334155] tracking-[0.2em] font-mono">MARITIME SURVEILLANCE NODE</div>
+          <div className="text-[9px] text-[#334155] tracking-[0.2em] font-mono">ACORN SURVEILLANCE NODE</div>
         </div>
       </div>
 

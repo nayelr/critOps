@@ -1,14 +1,19 @@
 import React from 'react'
 import { useSimulation } from './hooks/useSimulation'
+import { useCameraStreamUrl } from './hooks/useCameraStreamUrl'
+import { useYoloWsUrl } from './hooks/useYoloWsUrl'
 import TopBar        from './components/TopBar'
 import MapPanel      from './components/MapPanel'
 import HydrophonePanel from './components/HydrophonePanel'
+import CameraPanel   from './components/CameraPanel'
 import AIPanel       from './components/AIPanel'
 import SensorStrip   from './components/SensorStrip'
 import EventLog      from './components/EventLog'
 
 export default function App() {
   const sim = useSimulation()
+  const cameraStreamUrl = useCameraStreamUrl()
+  const yoloWsUrl = useYoloWsUrl()
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#040912', overflow: 'hidden' }}>
@@ -18,26 +23,32 @@ export default function App() {
         utcTime={sim.utcTime}
         sensors={sim.sensors}
         confidence={sim.confidence}
+        submersibleDetected={sim.submersibleDetected}
       />
 
       {/* ── Main body ───────────────────────────────────── */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 8, padding: 8, minHeight: 0 }}>
 
-        {/* Row 1: Map (left, 57%) | Hydrophone (right, 43%) */}
-        <div style={{ display: 'flex', gap: 8, flex: '0 0 auto', height: 420 }}>
-          <div style={{ flex: '0 0 57%' }}>
+        {/* Row 1: Map | Camera (Pi USB MJPEG) | Hydrophone */}
+        <div style={{ display: 'flex', gap: 8, flex: '0 0 auto', height: 520, minHeight: 0 }}>
+          <div style={{ flex: '1 1 0', minWidth: 0 }}>
             <MapPanel
               sensors={sim.sensors}
               vessels={sim.vessels}
               threatLat={sim.threatLat}
               threatLon={sim.threatLon}
-              confidence={sim.confidence}
+              submersibleDetected={sim.submersibleDetected}
             />
           </div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: '0 0 460px', minWidth: 0 }}>
+            <CameraPanel streamUrl={cameraStreamUrl} yoloWsUrl={yoloWsUrl} />
+          </div>
+          <div style={{ flex: '1 1 0', minWidth: 0 }}>
             <HydrophonePanel
               confidence={sim.confidence}
               threatRange={sim.threatRange}
+              submersibleDetected={sim.submersibleDetected}
+              waterTemp={sim.sensors?.waterTemp ?? 21}
             />
           </div>
         </div>

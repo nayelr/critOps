@@ -46,7 +46,7 @@ export default function CybersecPanel() {
           <SecurityIndicator label="SENSOR TAMPER DETECT" status="warning" detail="IMU housing seal — minor delta" />
           <SecurityIndicator label="INTRUSION DETECTION" status="secure" detail="0 active threats" />
           <SecurityIndicator label="UNAUTHORIZED ACCESS" status="warning" detail="1 failed SSH attempt (blocked)" />
-          <SecurityIndicator label="VPN TUNNEL" status="secure" detail="shore-01.tritonwatch.net" />
+          <SecurityIndicator label="VPN TUNNEL" status="secure" detail="shore-01.acorn.ops" />
           <SecurityIndicator label="CERT EXPIRY" status="secure" detail="Valid 2027-04-01" />
         </div>
 

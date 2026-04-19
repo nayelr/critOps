@@ -12,52 +12,50 @@ const SENSORS = [
       </svg>
     ),
     color: '#38bdf8',
-    format: v => v.toFixed(1),
-  },
-  {
-    key: 'waveHeight',
-    label: 'Wave Height',
-    unit: 'm',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M3 12c1.5-3 4.5-3 6 0s4.5 3 6 0 4.5-3 6 0" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M3 17c1.5-3 4.5-3 6 0s4.5 3 6 0 4.5-3 6 0" stroke="#22d3ee" strokeWidth="2" strokeLinecap="round" opacity="0.5"/>
-      </svg>
-    ),
-    color: '#22d3ee',
     format: v => v.toFixed(2),
   },
   {
-    key: 'windSpeed',
-    label: 'Wind Speed',
-    unit: 'kts',
+    key: 'salinity',
+    label: 'Salinity',
+    unit: 'ppt',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M3 8h13a3 3 0 100-6c-1.66 0-3 1.34-3 3" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M3 12h16a3 3 0 110 6c-1.66 0-3-1.34-3-3" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round"/>
-        <path d="M3 16h8" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M12 3c-2 4-5 7-5 10a5 5 0 1010 0c0-3-3-6-5-10z" stroke="#22d3ee" strokeWidth="1.5" strokeLinejoin="round"/>
+        <circle cx="12" cy="13" r="1.5" fill="#22d3ee"/>
+      </svg>
+    ),
+    color: '#22d3ee',
+    format: v => v.toFixed(3),
+  },
+  {
+    key: 'pressure',
+    label: 'Pressure',
+    unit: 'hPa',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="8" stroke="#94a3b8" strokeWidth="1.5"/>
+        <path d="M12 8v4l3 2" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
     color: '#94a3b8',
     format: v => v.toFixed(1),
   },
   {
-    key: 'currentDir',
-    label: 'Current Dir',
-    unit: '°',
+    key: 'atmosphere',
+    label: 'Atmosphere',
+    unit: '% RH',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="9" stroke="#34d399" strokeWidth="2"/>
-        <path d="M12 7v5l3 3" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M6 16c0-2 1.5-4 4-4s4 2 4 4" stroke="#34d399" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M4 12c0-1.5 1-3 3-3M17 9c2 0 3 1.5 3 3" stroke="#34d399" strokeWidth="1.5" strokeLinecap="round" opacity="0.6"/>
       </svg>
     ),
     color: '#34d399',
-    format: v => `${v}°`,
-    noUnit: true,
+    format: v => v.toFixed(1),
   },
   {
     key: 'depth',
-    label: 'Sonar Depth',
+    label: 'Water depth',
     unit: 'm',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -67,7 +65,7 @@ const SENSORS = [
       </svg>
     ),
     color: '#818cf8',
-    format: v => v.toFixed(1),
+    format: v => v.toFixed(2),
   },
 ]
 
@@ -87,10 +85,10 @@ export default function SensorStrip({ sensors }) {
             </div>
             <div className="flex items-baseline gap-1.5">
               <span className="val-lg" style={{ color: s.color }}>
-                {s.noUnit ? display.replace('°','') : display}
+                {display}
               </span>
               <span className="font-mono text-[11px] text-[#475569]">
-                {s.noUnit ? '°' : s.unit}
+                {s.unit}
               </span>
             </div>
           </div>
