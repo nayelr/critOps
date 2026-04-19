@@ -5,16 +5,16 @@
 
 export const BUOY = {
   name: 'Sentinel-01',
-  lat: 36.6214,
-  lon: -121.9173,
+  lat: 38.4821,
+  lon: -76.3974,
   missionId: 'DW-2026-0418',
 }
 
 // The single active threat scenario
 export const THREAT_CONTACT = {
   id: 'UWC-01',
-  lat: 36.6284,
-  lon: -121.9312,
+  lat: 38.4912,
+  lon: -76.4183,
   type: 'Probable Submersible',
   bearing: 312,
   rangeKm: 1.84,
@@ -26,8 +26,8 @@ export const THREAT_CONTACT = {
 
 // Surface vessels (AIS)
 export const VESSELS = [
-  { id: 'V1', name: 'COASTAL RUNNER', lat: 36.642, lon: -121.884, heading: 220, speed: 8.2, ais: true },
-  { id: 'V2', name: 'UNK-2847',       lat: 36.630, lon: -121.956, heading: 160, speed: 12.1, ais: false },
+  { id: 'V1', name: 'COASTAL RUNNER', lat: 38.502, lon: -76.378, heading: 200, speed: 8.2, ais: true },
+  { id: 'V2', name: 'UNK-2847',       lat: 38.465, lon: -76.421, heading: 340, speed: 12.1, ais: false },
 ]
 
 // AI assessment text scenarios

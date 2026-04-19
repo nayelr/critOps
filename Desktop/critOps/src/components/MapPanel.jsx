@@ -6,13 +6,13 @@ import {
 import { BUOY, THREAT_CONTACT } from '../data/mockData'
 
 const DRIFT_TRAIL = [
-  [36.618, -121.912], [36.619, -121.914],
-  [36.620, -121.916], [BUOY.lat, BUOY.lon],
+  [38.479, -76.393], [38.480, -76.395],
+  [38.481, -76.397], [BUOY.lat, BUOY.lon],
 ]
 
 const RESTRICTED_ZONE = [
-  [36.65, -121.96], [36.65, -121.87],
-  [36.58, -121.87], [36.58, -121.96],
+  [38.52, -76.45], [38.52, -76.35],
+  [38.44, -76.35], [38.44, -76.45],
 ]
 
 export default function MapPanel({ sensors, vessels, threatLat, threatLon, confidence }) {
@@ -26,7 +26,7 @@ export default function MapPanel({ sensors, vessels, threatLat, threatLon, confi
         <div className="dot-online" />
         <span className="panel-label">Situation Awareness</span>
         <div className="ml-auto flex items-center gap-3">
-          <span className="text-[10px] font-mono text-[#334155]">MONTEREY BAY · CA</span>
+          <span className="text-[10px] font-mono text-[#334155]">CHESAPEAKE BAY · MD</span>
           <div className="flex items-center gap-1.5 bg-[#1a0f0f] border border-[#ef444433] rounded px-2 py-0.5">
             <div className="dot-threat" style={{ width: 6, height: 6 }} />
             <span className="font-mono text-[9px] font-bold text-[#ef4444]">1 ACTIVE CONTACT</span>
